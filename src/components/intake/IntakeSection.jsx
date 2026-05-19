@@ -120,6 +120,7 @@ function IntakeItem({ item }) {
         </div>
       ) : (
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ color: 'var(--color-accent)', fontSize: 10, flexShrink: 0, lineHeight: 1 }}>•</span>
           <span style={{ flex: 1, fontSize: '12px', color: 'var(--color-text)' }}>{item.title}</span>
           <button onClick={() => setSorting(true)} style={{ background: 'none', border: 'none', fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', cursor: 'pointer', letterSpacing: '0.04em' }}>SORT →</button>
           <button onClick={removeItem} style={{ background: 'none', border: 'none', color: 'var(--color-text-muted)', cursor: 'pointer', fontSize: 11 }}>✕</button>

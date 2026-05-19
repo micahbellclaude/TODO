@@ -31,7 +31,7 @@ export default function RightPanel() {
         ))}
       </div>
 
-      <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
+      <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
         {activeTab === 'weekly' ? <WeeklyTaskList /> : <DailyTaskList />}
       </div>
     </div>

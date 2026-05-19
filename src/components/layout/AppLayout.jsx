@@ -6,7 +6,7 @@ import WeeklyTaskList from '../tasks/WeeklyTaskList'
 import DailyTaskList from '../daily/DailyTaskList'
 
 const TABS = [
-  { id: 'left', label: 'LEFT' },
+  { id: 'left', label: 'REF' },
   { id: 'weekly', label: 'WEEKLY' },
   { id: 'daily', label: 'DAILY' },
 ]
@@ -15,7 +15,7 @@ export default function AppLayout() {
   const [mobileTab, setMobileTab] = useState('weekly')
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100dvh', overflow: 'hidden' }}>
       <Header />
 
       {/* Mobile top tab bar — hidden on desktop */}

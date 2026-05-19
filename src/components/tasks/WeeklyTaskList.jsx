@@ -81,7 +81,7 @@ export default function WeeklyTaskList() {
         </div>
 
         {/* Task list */}
-        <div style={{ flex: 1, overflowY: 'auto', paddingBottom: 80 }}>
+        <div style={{ flex: 1, overflowY: 'auto' }}>
           {tasks.length === 0 && (
             <div style={{ padding: '40px 20px', textAlign: 'center', color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)', fontSize: '11px', letterSpacing: '0.05em' }}>
               NO TASKS YET
@@ -94,7 +94,7 @@ export default function WeeklyTaskList() {
 
         {/* Add task button */}
         {!isReadOnly && (
-          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '12px 20px', background: 'var(--color-surface)', borderTop: '1px solid var(--color-border)' }}>
+          <div style={{ flexShrink: 0, padding: '12px 20px', paddingBottom: 'max(12px, env(safe-area-inset-bottom))', background: 'var(--color-surface)', borderTop: '1px solid var(--color-border)' }}>
             <button
               onClick={() => setSheetOpen(true)}
               style={{
