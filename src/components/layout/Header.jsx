@@ -1,23 +1,19 @@
 import { useState } from 'react'
-import { format, addWeeks, subWeeks, startOfWeek } from 'date-fns'
+import { format } from 'date-fns'
 import { useApp } from '../../context/AppContext'
-import { supabase } from '../../lib/supabase'
+import NewWeekModal from './NewWeekModal'
+import { exportWeekPdf } from '../../lib/exportPdf'
 
 export default function Header() {
   const { state, dispatch, loadWeekData } = useApp()
   const [showWeekPicker, setShowWeekPicker] = useState(false)
+  const [showNewWeek, setShowNewWeek] = useState(false)
 
   const currentWeek = state.currentWeek
 
   const weekLabel = currentWeek
     ? `${format(new Date(currentWeek.start_date + 'T00:00:00'), 'MMM d')} – ${format(new Date(currentWeek.end_date + 'T00:00:00'), 'MMM d, yyyy')}`
     : '—'
-
-  const isCurrentWeek = () => {
-    if (!currentWeek) return false
-    const { getMonday } = useApp()
-    return currentWeek.start_date === format(startOfWeek(new Date(), { weekStartsOn: 1 }), 'yyyy-MM-dd')
-  }
 
   const switchToWeek = async (week) => {
     dispatch({ type: 'SET_WEEK', payload: week })
@@ -28,6 +24,16 @@ export default function Header() {
   }
 
   const unsortedCount = state.intakeItems.filter(i => i.status === 'pending').length
+
+  const handleExport = () => {
+    exportWeekPdf({
+      week: state.currentWeek,
+      tasks: state.tasks,
+      wins: state.wins,
+      leftSections: state.leftSections,
+      intakeItems: state.intakeItems,
+    })
+  }
 
   return (
     <header style={{
@@ -128,6 +134,24 @@ export default function Header() {
 
       {/* Right side — intake badge + new week */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <button
+          onClick={handleExport}
+          title="Export week as PDF"
+          style={{
+            background: 'none',
+            border: '1px solid var(--color-border)',
+            borderRadius: 2,
+            padding: '4px 10px',
+            fontFamily: 'var(--font-mono)',
+            fontSize: '10px',
+            letterSpacing: '0.06em',
+            color: 'var(--color-text-secondary)',
+            cursor: 'pointer',
+          }}
+        >
+          PDF
+        </button>
+
         {unsortedCount > 0 && (
           <div style={{
             fontFamily: 'var(--font-mono)',
@@ -139,22 +163,26 @@ export default function Header() {
           </div>
         )}
         {currentWeek?.status !== 'closed' && (
-          <button style={{
-            background: 'var(--color-text)',
-            color: 'var(--color-surface)',
-            border: 'none',
-            borderRadius: 2,
-            padding: '4px 10px',
-            fontFamily: 'var(--font-mono)',
-            fontSize: '10px',
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            cursor: 'pointer',
-          }}>
+          <button
+            onClick={() => setShowNewWeek(true)}
+            style={{
+              background: 'var(--color-text)',
+              color: 'var(--color-surface)',
+              border: 'none',
+              borderRadius: 2,
+              padding: '4px 10px',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '10px',
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              cursor: 'pointer',
+            }}>
             New Week
           </button>
         )}
       </div>
+
+      {showNewWeek && <NewWeekModal onClose={() => setShowNewWeek(false)} />}
     </header>
   )
 }
