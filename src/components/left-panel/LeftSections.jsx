@@ -87,8 +87,9 @@ function SectionCard({ section, isReadOnly, onMoveUp, onMoveDown, isFirst, isLas
               fontSize: '10px',
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
-              color: 'var(--color-text-secondary)',
+              color: 'var(--color-text)',
               cursor: isReadOnly ? 'default' : 'text',
+              fontSize: '11px',
             }}
           >
             {section.title}
@@ -127,7 +128,7 @@ function SectionCard({ section, isReadOnly, onMoveUp, onMoveDown, isFirst, isLas
                     transition: 'all 0.15s',
                   }}
                 >
-                  {section.prospecting_days?.[day] && <span style={{ color: 'white', fontSize: 12 }}>✓</span>}
+                  {section.prospecting_days?.[day] && <span style={{ color: 'white', fontSize: 13, fontWeight: 300, lineHeight: 1 }}>×</span>}
                 </div>
                 <span className="mono" style={{ fontSize: '9px', textTransform: 'uppercase', color: 'var(--color-text-muted)' }}>{day}</span>
               </label>
