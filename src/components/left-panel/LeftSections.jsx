@@ -3,6 +3,9 @@ import { useApp } from '../../context/AppContext'
 import { supabase } from '../../lib/supabase'
 import { v4 as uuidv4 } from 'uuid'
 import WinsSection from '../wins/WinsSection'
+import ChecklistSection from './ChecklistSection'
+
+const CHECKLIST_TYPES = ['checkins', 'sales_meeting']
 
 const DAYS = ['mon', 'tue', 'wed', 'thu', 'fri']
 
@@ -109,6 +112,8 @@ function SectionCard({ section, isReadOnly, onMoveUp, onMoveDown, isFirst, isLas
       <div style={{ padding: '10px' }}>
         {section.type === 'wins' ? (
           <WinsSection isReadOnly={isReadOnly} />
+        ) : CHECKLIST_TYPES.includes(section.type) ? (
+          <ChecklistSection section={section} isReadOnly={isReadOnly} onUpdate={content => update({ content })} />
         ) : section.type === 'prospecting' ? (
           <div style={{ display: 'flex', gap: 10, justifyContent: 'center', padding: '4px 0' }}>
             {DAYS.map(day => (
