@@ -1,0 +1,51 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=IBM+Plex+Mono:wght@400;500&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "DM Sans", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+
+  --color-canvas: #f5f4f0;
+  --color-surface: #ffffff;
+  --color-border: #d8d6d0;
+  --color-border-strong: #a8a5a0;
+  --color-text: #1a1917;
+  --color-text-secondary: #6b6860;
+  --color-text-muted: #9e9b96;
+  --color-accent: #ff6b00;
+  --color-accent-hover: #e55f00;
+  --color-accent-light: #fff2e8;
+  --color-waiting: #f59e0b;
+  --color-waiting-light: #fffbeb;
+  --color-done: #9e9b96;
+  --color-removed: #d1cfc9;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-canvas);
+  color: var(--color-text);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-border-strong); }
