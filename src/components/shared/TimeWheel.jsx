@@ -53,7 +53,6 @@ export default function TimeWheel({ onChange }) {
       if (s.minutes >= 60) { s.minutes -= 60; s.hours = Math.min(23, s.hours + 1) }
       if (s.minutes < 0) { s.minutes += 60; s.hours = Math.max(0, s.hours - 1) }
     }
-    if (navigator.vibrate) navigator.vibrate(8)
     setDisplay({ mode: s.mode, hours: s.hours, minutes: s.minutes, rotation: s.visualRotation })
     const totalMin = s.hours * 60 + s.minutes
     onChange?.(totalMin)
@@ -84,6 +83,11 @@ export default function TimeWheel({ onChange }) {
 
   const onEnd = useCallback(() => {
     stateRef.current.isDragging = false
+    // Snap visual rotation to nearest notch (every 36°)
+    const snapped = Math.round(stateRef.current.visualRotation / NOTCH_DEG) * NOTCH_DEG
+    stateRef.current.visualRotation = snapped
+    stateRef.current.accumDeg = 0
+    setDisplay(d => ({ ...d, rotation: snapped }))
   }, [])
 
   useEffect(() => {
