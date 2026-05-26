@@ -105,13 +105,23 @@ export function AppProvider({ children }) {
       supabase.from('wins').select('*').eq('week_id', weekId).order('created_at'),
       supabase.from('left_sections').select('*').eq('week_id', weekId).order('sort_order'),
     ])
-    dispatch({ type: 'SET_TASKS', payload: tasksRes.data || [] })
+
+    // Reset daily tasks that were added on a previous day
+    const today = format(new Date(), 'yyyy-MM-dd')
+    let tasks = tasksRes.data || []
+    const stale = tasks.filter(t => t.on_daily && t.daily_date && t.daily_date < today)
+    if (stale.length > 0) {
+      await supabase.from('tasks').update({ on_daily: false }).in('id', stale.map(t => t.id))
+      tasks = tasks.map(t => stale.find(s => s.id === t.id) ? { ...t, on_daily: false } : t)
+    }
+
+    dispatch({ type: 'SET_TASKS', payload: tasks })
     dispatch({ type: 'SET_INTAKE', payload: intakeRes.data || [] })
     dispatch({ type: 'SET_WINS', payload: winsRes.data || [] })
     dispatch({ type: 'SET_LEFT_SECTIONS', payload: sectionsRes.data || [] })
 
     // find any running timer
-    const running = (tasksRes.data || []).find(t => t.timer_running)
+    const running = tasks.find(t => t.timer_running)
     if (running) dispatch({ type: 'SET_ACTIVE_TIMER', payload: running.id })
   }, [])
 

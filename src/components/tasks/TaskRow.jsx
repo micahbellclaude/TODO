@@ -267,7 +267,7 @@ export default function TaskRow({ task, isReadOnly, mode = 'weekly' }) {
               </button>
               {showMenu && (
                 <div style={{ position: 'absolute', right: 0, top: 'calc(100% + 2px)', background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 4, zIndex: 50, minWidth: 160, boxShadow: '0 4px 12px rgba(0,0,0,0.08)', overflow: 'hidden' }}>
-                  {isDaily ? [
+                  {(isDaily ? [
                     { label: 'Remove from Daily', action: removeFromDaily },
                     { label: 'Mark Done', action: toggleDone },
                     { label: 'Remove Task', action: removeTask, danger: true },
@@ -275,7 +275,7 @@ export default function TaskRow({ task, isReadOnly, mode = 'weekly' }) {
                     { label: '→ Send to Daily', action: sendToDaily },
                     { label: task.status === 'waiting' ? 'Clear Waiting' : 'Flag as Waiting', action: task.status === 'waiting' ? () => updateTask({ status: 'todo', waiting_note: null, waiting_since: null }) : () => { setShowWaitingInput(true); setShowMenu(false) } },
                     { label: 'Remove', action: removeTask, danger: true },
-                  ].map(item => (
+                  ]).map(item => (
                     <button key={item.label} onClick={item.action} style={{ display: 'block', width: '100%', padding: '8px 12px', textAlign: 'left', background: 'none', border: 'none', borderBottom: '1px solid var(--color-border)', fontFamily: 'var(--font-sans)', fontSize: '12px', color: item.danger ? 'var(--color-accent)' : 'var(--color-text)', cursor: 'pointer' }}>
                       {item.label}
                     </button>
