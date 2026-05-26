@@ -30,12 +30,16 @@ export default function WeeklyTaskList() {
   const [newTitle, setNewTitle] = useState('')
   const [newEstMinutes, setNewEstMinutes] = useState(0)
 
-  const tasks = state.tasks.filter(t => t.status !== 'removed')
+  const [showCompleted, setShowCompleted] = useState(true)
+
+  const allTasks = state.tasks.filter(t => t.status !== 'removed')
+  const tasks = allTasks.filter(t => t.status !== 'done')
+  const completedTasks = allTasks.filter(t => t.status === 'done')
   const weekId = state.currentWeek?.id
   const isReadOnly = state.currentWeek?.status === 'closed'
 
   const projectedMin = tasks.reduce((s, t) => s + (t.estimated_minutes || 0), 0)
-  const actualSecs = tasks.reduce((s, t) => s + (t.actual_seconds || 0), 0)
+  const actualSecs = allTasks.reduce((s, t) => s + (t.actual_seconds || 0), 0)
   const actualMin = Math.floor(actualSecs / 60)
 
   const addTask = async () => {
@@ -76,13 +80,13 @@ export default function WeeklyTaskList() {
           </span>
           <span style={{ color: 'var(--color-border-strong)' }}>·</span>
           <span className="mono" style={{ color: 'var(--color-text-muted)', fontSize: '11px' }}>
-            {tasks.filter(t => t.status === 'done').length}/{tasks.length}
+            {completedTasks.length}/{allTasks.length}
           </span>
         </div>
 
         {/* Task list */}
         <div style={{ flex: 1, overflowY: 'auto' }}>
-          {tasks.length === 0 && (
+          {allTasks.length === 0 && (
             <div style={{ padding: '40px 20px', textAlign: 'center', color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)', fontSize: '11px', letterSpacing: '0.05em' }}>
               NO TASKS YET
             </div>
@@ -90,6 +94,20 @@ export default function WeeklyTaskList() {
           {tasks.map(task => (
             <TaskRow key={task.id} task={task} isReadOnly={isReadOnly} mode="weekly" />
           ))}
+          {completedTasks.length > 0 && (
+            <>
+              <button
+                onClick={() => setShowCompleted(v => !v)}
+                style={{ display: 'flex', alignItems: 'center', gap: 6, width: '100%', padding: '8px 20px', background: 'var(--color-canvas)', border: 'none', borderTop: '1px solid var(--color-border)', borderBottom: '1px solid var(--color-border)', fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '0.08em', color: 'var(--color-text-muted)', cursor: 'pointer', textAlign: 'left' }}
+              >
+                <span>{showCompleted ? '▾' : '▸'}</span>
+                COMPLETED — {completedTasks.length}
+              </button>
+              {showCompleted && completedTasks.map(task => (
+                <TaskRow key={task.id} task={task} isReadOnly={isReadOnly} mode="weekly" />
+              ))}
+            </>
+          )}
         </div>
 
         {/* Add task button */}
