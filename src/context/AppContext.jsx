@@ -148,7 +148,59 @@ export function AppProvider({ children }) {
       if (error) { dispatch({ type: 'SET_ERROR', payload: error.message }); return }
       week = newWeek
 
-      // seed default left sections
+      // find the most recent previous week to carry over from
+      const prevWeek = (allWeeks || []).find(w => w.start_date < monday)
+
+      if (prevWeek) {
+        // close the previous week
+        await supabase.from('weeks').update({ status: 'closed' }).eq('id', prevWeek.id)
+
+        // carry over incomplete tasks
+        const { data: prevTasks } = await supabase
+          .from('tasks')
+          .select('*')
+          .eq('week_id', prevWeek.id)
+          .in('status', ['todo', 'in_progress', 'waiting'])
+          .order('sort_order')
+
+        if (prevTasks && prevTasks.length > 0) {
+          const carried = prevTasks.map(t => ({
+            week_id: week.id,
+            title: t.title,
+            estimated_time: t.estimated_time,
+            estimated_minutes: t.estimated_minutes,
+            actual_minutes: 0,
+            status: t.status === 'in_progress' ? 'todo' : t.status,
+            waiting_note: t.waiting_note,
+            waiting_since: t.waiting_since,
+            on_daily: false,
+            daily_date: null,
+            carry_from_task_id: t.id,
+            timer_running: false,
+            timer_started_at: null,
+            sort_order: t.sort_order,
+          }))
+          await supabase.from('tasks').insert(carried)
+        }
+
+        // carry over unsorted intake items
+        const { data: prevIntake } = await supabase
+          .from('intake_items')
+          .select('*')
+          .eq('week_id', prevWeek.id)
+          .eq('status', 'pending')
+
+        if (prevIntake && prevIntake.length > 0) {
+          const carriedIntake = prevIntake.map(i => ({
+            week_id: week.id,
+            title: i.title,
+            status: 'pending',
+          }))
+          await supabase.from('intake_items').insert(carriedIntake)
+        }
+      }
+
+      // seed default left sections (always fresh each week per spec)
       const sections = DEFAULT_SECTIONS.map(s => ({ ...s, week_id: week.id }))
       const { data: createdSections } = await supabase.from('left_sections').insert(sections).select()
       dispatch({ type: 'SET_LEFT_SECTIONS', payload: createdSections || [] })
